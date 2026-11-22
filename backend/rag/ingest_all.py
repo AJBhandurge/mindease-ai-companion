@@ -1,0 +1,85 @@
+"""
+RAG INGESTION SCRIPT
+Run this once to populate the knowledge base: python ingest_all.py
+"""
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from engine import RAGEngine
+
+
+SAMPLE_CONTENT = """
+Anxiety is a normal and often healthy emotion. However, when a person regularly feels
+disproportionate levels of anxiety, it might become a medical disorder.
+
+Cognitive Behavioral Therapy (CBT) is one of the most effective treatments for anxiety.
+CBT helps you identify negative thought patterns and replace them with healthier ones.
+
+Box Breathing Technique:
+1. Breathe in slowly for 4 counts
+2. Hold your breath for 4 counts
+3. Exhale slowly for 4 counts
+4. Hold for 4 counts
+5. Repeat 4 times
+This technique activates the parasympathetic nervous system and reduces anxiety.
+
+Depression is a mood disorder that causes persistent feelings of sadness and loss of interest.
+Signs include: persistent sadness, loss of interest, changes in sleep, fatigue, difficulty concentrating.
+Treatment options: therapy, medication, lifestyle changes, support groups.
+
+5-4-3-2-1 Grounding Technique for Anxiety:
+Name 5 things you can see, 4 things you can touch, 3 things you can hear,
+2 things you can smell, 1 thing you can taste.
+This brings you back to the present moment.
+
+Self-care strategies for mental wellness:
+- Regular sleep schedule (7-9 hours)
+- Daily physical activity (even 10 minute walk helps)
+- Limiting social media use
+- Connecting with supportive people
+- Journaling thoughts and feelings
+- Mindfulness and meditation practice
+
+Progressive Muscle Relaxation:
+Tense each muscle group for 5 seconds, then release and notice the relaxation.
+Start from your feet, then move up: calves, thighs, abdomen, chest, arms, shoulders, face.
+This is especially helpful for physical tension caused by stress and anxiety.
+
+Understanding Burnout:
+Burnout is a state of emotional, physical, and mental exhaustion caused by prolonged stress.
+Signs include: chronic fatigue, cynicism, reduced performance, feeling detached.
+Recovery requires rest, boundary-setting, and often professional support.
+
+Time-boxing for Stress Management:
+Pick your biggest task. Set a 25-minute timer. Work only on that task.
+Take a 5-minute break. After 4 cycles, take a longer 30-minute break.
+This technique (Pomodoro) reduces overwhelm by breaking work into manageable chunks.
+
+Crisis resources India:
+- iCall: 9152987821 (Mon-Sat, 8am-10pm)
+- Vandrevala Foundation: 1860-2662-345 (24/7)
+- NIMHANS: 080-46110007
+
+The Importance of Validation:
+When someone shares difficult feelings, the most helpful first response is validation —
+acknowledging that their feelings make sense given their situation, before offering advice.
+This is more effective than jumping straight to solutions.
+"""
+
+
+def main():
+    os.makedirs("data", exist_ok=True)
+    with open("data/mental_health_basics.txt", "w") as f:
+        f.write(SAMPLE_CONTENT)
+    print("Sample data written to data/mental_health_basics.txt")
+
+    rag = RAGEngine()
+    rag.ingest_folder("data")
+    print(f"RAG database now has {rag.collection.count()} chunks.")
+    print("\nTo add more knowledge, drop .txt or .md files into the data/ folder")
+    print("and re-run this script.")
+
+
+if __name__ == "__main__":
+    main()

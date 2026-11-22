@@ -1,0 +1,69 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: mindease-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+
+  ollama-init:
+    image: ollama/ollama:latest
+    container_name: mindease-ollama-init
+    depends_on:
+      - ollama
+    environment:
+      OLLAMA_HOST: ollama:11434
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        until ollama list >/dev/null 2>&1; do sleep 2; done
+        ollama pull phi3
+    restart: "no"
+
+  backend:
+    build:
+      context: ./backend
+    container_name: mindease-backend
+    depends_on:
+      - ollama
+      - ollama-init
+    environment:
+      DATABASE_URL: sqlite:///./mindease.db
+      CHROMA_DB_PATH: ./chroma_db
+      OLLAMA_BASE_URL: http://ollama:11434
+      DEFAULT_LLM_MODEL: phi3
+      WHISPER_MODEL_SIZE: small
+      WHISPER_DEVICE: cpu
+      SECRET_KEY: mindease_docker_change_me
+    ports:
+      - "8000:8000"
+    volumes:
+      - backend_data:/app
+      - huggingface_cache:/root/.cache/huggingface
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    restart: unless-stopped
+
+  mobile:
+    build:
+      context: ./mobile
+    container_name: mindease-mobile
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      EXPO_PUBLIC_API_URL: http://localhost:8000/api
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+
+volumes:
+  ollama_data:
+  backend_data:
+  huggingface_cache:

@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "MindEase",
+    "slug": "mindease",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#0f172a"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "MindEase needs microphone access so you can talk to your companion."
+      }
+    },
+    "android": {
+      "package": "com.mindease.app",
+      "permissions": ["RECORD_AUDIO"],
+      "adaptiveIcon": {
+        "backgroundColor": "#0f172a"
+      }
+    }
+  }
+}

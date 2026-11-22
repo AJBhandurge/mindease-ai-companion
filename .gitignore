@@ -1,0 +1,40 @@
+# Secrets and local environment files
+.env
+.env.*
+!.env.example
+
+# Python environments, bytecode, and test/tool caches
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local databases, model indexes, and downloaded model/cache data
+*.db
+*.sqlite
+*.sqlite3
+**/chroma_db/
+.cache/
+
+# Node, Expo, and build output
+node_modules/
+.expo/
+dist/
+web-build/
+
+# Local recordings and voice samples
+backend/voice/*.wav
+voice_samples/
+
+# Editor, operating system, and temporary files
+.DS_Store
+Thumbs.db
+*.log
+.~lock.*#
+
+# Verbative — private project state (channels, memory, notes)
+.verbative/
